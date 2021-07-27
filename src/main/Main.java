@@ -4,16 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
-
+import commands.CommandTabCompleter;
 import commands.UserCommands;
-import events.MainEvents;
 import util.FileReader;
 
 public class Main extends JavaPlugin
 {
 	public static JavaPlugin plugin;
-	public static ASkyBlockAPI skyblock = ASkyBlockAPI.getInstance();
 	
 	@Override
 	public void onEnable()
@@ -21,7 +18,6 @@ public class Main extends JavaPlugin
 		plugin = this;
 		
 		registerCommands();
-		registerEvents();
 		
 		//FileReader.readChestInfor();
 		testReset();
@@ -35,12 +31,10 @@ public class Main extends JavaPlugin
 		Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "플러그인이 비홝성화되었습니다");
 	}
 	
-	private void registerEvents() {
-		getServer().getPluginManager().registerEvents(new MainEvents(), plugin);
-	}
-	
 	private void registerCommands() {
 		getCommand("섬창고").setExecutor(new UserCommands());
+		
+		getCommand("섬창고").setTabCompleter(new CommandTabCompleter());
 	}
 	
 	private void testReset() {

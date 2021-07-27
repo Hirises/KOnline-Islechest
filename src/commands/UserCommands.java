@@ -9,7 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import main.Main;
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
+
 import util.FileReader;
 
 public class UserCommands implements CommandExecutor
@@ -40,8 +41,8 @@ public class UserCommands implements CommandExecutor
 	}
 	
 	private int calculateChestSize(UUID uuid) {	//상자크기 계산
-		Main.skyblock.calculateIslandLevel(uuid);
-		long islandLevel = Main.skyblock.getLongIslandLevel(uuid);
+		ASkyBlockAPI.getInstance().calculateIslandLevel(uuid);
+		long islandLevel = ASkyBlockAPI.getInstance().getLongIslandLevel(uuid);
 		int size = 0;
 		
 		for(int i = 0; i < 6; i++) {
@@ -66,14 +67,14 @@ public class UserCommands implements CommandExecutor
 	
 	private boolean openOwnIslandChest(Player sender, UUID uuid) {
 		Bukkit.broadcastMessage(uuid + "//");
-		Bukkit.broadcastMessage(Main.skyblock.equals(null) + "");
+		Bukkit.broadcastMessage(ASkyBlockAPI.getInstance().hasIsland(uuid) + "");
 		
-		if(Main.skyblock.isCoop(sender)) {	//Coop이면 중지
+		if(ASkyBlockAPI.getInstance().isCoop(sender)) {	//Coop이면 중지
 			return false;
 		}
 		
-		UUID islandOwner = uuid; //Main.skyblock.inTeam(uuid) ? Main.skyblock.getTeamLeader(uuid) : uuid;	//섬이름, 주인 가져오기
-		String islandName = Main.skyblock.getIslandName(islandOwner);
+		UUID islandOwner = ASkyBlockAPI.getInstance().inTeam(uuid) ? ASkyBlockAPI.getInstance().getTeamLeader(uuid) : uuid;	//섬이름, 주인 가져오기
+		String islandName = ASkyBlockAPI.getInstance().getIslandName(islandOwner);
 		
 		Inventory islandChest = null;	//인벤토리 가져오기
 		if(FileReader.islandChest.containsKey(islandName)) {
