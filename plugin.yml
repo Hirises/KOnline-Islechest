@@ -1,0 +1,12 @@
+name: KOnline-Islechest
+version: 1.0
+api-version: 1.12.2
+auther: Hirises
+descripton: KOnline-Islechest depended on Askyblock
+main: main.Main
+depend: [ASkyBlock]
+commands:
+  섬창고:
+    열기:
+      description: open sender's island chest
+      usage: /섬창고 열기 [플레이어 이름]
