@@ -42,14 +42,15 @@ public class AdditionalCommands implements CommandExecutor
 						case "reload":
 							Main.SetDefault();
 							FileManager.readChestSize();
+							FileManager.readChestContents();
 							
 							sender.sendMessage("플러그인 파일을 다시 로드했습니다.");
 							
 							return true;
 						case "save":
+							FileManager.saveChestContents();
 							
-							
-							
+							sender.sendMessage("플러그인 파일을 저장했습니다.");
 							return true;
 						case "reset":
 							if(isRunReset) {
@@ -72,6 +73,22 @@ public class AdditionalCommands implements CommandExecutor
 									e.printStackTrace();
 									return false;
 								}
+								
+								f = new File(Main.plugin.getDataFolder().getAbsolutePath() + "\\chestcontents.yml");
+								yamlFile = YamlConfiguration.loadConfiguration(f);
+								f.delete();
+								try
+								{
+									f.createNewFile();
+								} catch (IOException e)
+								{
+									Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "chestcontents.yml 파일을 초기화하는 중 오류가 발생했습니다.");
+									e.printStackTrace();
+								}
+								
+								Main.SetDefault();
+								FileManager.readChestSize();
+								FileManager.readChestContents();
 								
 								sender.sendMessage("플러그인 파일을 리셋했습니다.");
 								

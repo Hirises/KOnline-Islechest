@@ -17,3 +17,6 @@ commands:
     reset:
       description: reset KOnline-Islechest plugin's all config file
       usage: /Islechest reset
+    save:
+      description: save KOnline-Islechest plugin's all config file
+      usage: /Islechest save

@@ -74,11 +74,11 @@ public class UserCommands implements CommandExecutor, Listener
 		String islandName = ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID);
 		
 		Inventory islandChest = null;	//인벤토리 가져오기
-		if(FileManager.islandChest.containsKey(islandName)) {
-			islandChest = checkChestSize(FileManager.islandChest.get(islandName), fromPlayerUUID, islandLevel);
+		if(FileManager.islandChest.containsKey(islandName + '/' + islandOwnerUUID)) {
+			islandChest = checkChestSize(FileManager.islandChest.get(islandName + '/' +  islandOwnerUUID), fromPlayerUUID, islandLevel);
 		}else {
 			islandChest = Bukkit.createInventory(null, calculateChestSize(islandLevel), islandName + "섬 창고");	//없으면 생성
-			FileManager.islandChest.put(islandName, islandChest);	//저장
+			FileManager.islandChest.put(islandName + '/' +  islandOwnerUUID, islandChest);	//저장
 		}
 		
 		toPlayer.openInventory(islandChest);
@@ -93,7 +93,7 @@ public class UserCommands implements CommandExecutor, Listener
 		if(targetSize > targetInven.getSize()) {	//목표 크기보다 작으면 늘림
 			outputInven = Bukkit.createInventory(null, targetSize, ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + "섬 창고");
 			outputInven.setContents(targetInven.getContents());
-			FileManager.islandChest.put(ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID), outputInven);	//저장
+			FileManager.islandChest.put(ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + '/' +  islandOwnerUUID, outputInven);	//저장
 		}
 		
 		return outputInven;

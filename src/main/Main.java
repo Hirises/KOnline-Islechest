@@ -23,6 +23,7 @@ public class Main extends JavaPlugin
 		
 		SetDefault();
 		FileManager.readChestSize();	//파일 읽어오기
+		FileManager.readChestContents();
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "플러그인이 활성화되었습니다");
 	}
@@ -30,6 +31,8 @@ public class Main extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
+		FileManager.saveChestContents();
+		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "플러그인이 비활성화되었습니다");
 	}
 	
