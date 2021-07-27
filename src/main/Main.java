@@ -18,9 +18,10 @@ public class Main extends JavaPlugin
 		plugin = this;
 		
 		registerCommands();
+		registerEvents();
 		
-		//FileReader.readChestInfor();
-		testReset();
+		SetDefault();
+		FileReader.readChestInfor();
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "플러그인이 활성화되었습니다");
 	}
@@ -37,7 +38,11 @@ public class Main extends JavaPlugin
 		getCommand("섬창고").setTabCompleter(new CommandTabCompleter());
 	}
 	
-	private void testReset() {
+	private void registerEvents() {
+		getServer().getPluginManager().registerEvents(new UserCommands(), plugin);
+	}
+	
+	private void SetDefault() {
 		FileReader.chestSize[0] = 1;
 		FileReader.chestSize[1] = 11;
 		FileReader.chestSize[2] = 21;
