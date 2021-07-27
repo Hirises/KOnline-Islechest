@@ -118,6 +118,12 @@ public class FileManager
 		yamlFile.save(f);
 	}
 	
+	public static void ReloadFiles() {	//파일 읽어오기
+		Main.SetDefault();
+		FileManager.readChestSize();
+		FileManager.readChestContents();
+	}
+	
 	private static String PacktoInven(Inventory input) {	//inven -> string
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

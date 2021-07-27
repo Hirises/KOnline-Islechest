@@ -40,15 +40,14 @@ public class AdditionalCommands implements CommandExecutor
 					
 					switch(add[0]) {
 						case "reload":
-							Main.SetDefault();
-							FileManager.readChestSize();
-							FileManager.readChestContents();
+							FileManager.ReloadFiles();
 							
 							sender.sendMessage("플러그인 파일을 다시 로드했습니다.");
 							
 							return true;
 						case "save":
 							FileManager.saveChestContents();
+							FileManager.ReloadFiles();
 							
 							sender.sendMessage("플러그인 파일을 저장했습니다.");
 							return true;
@@ -86,9 +85,7 @@ public class AdditionalCommands implements CommandExecutor
 									e.printStackTrace();
 								}
 								
-								Main.SetDefault();
-								FileManager.readChestSize();
-								FileManager.readChestContents();
+								FileManager.ReloadFiles();
 								
 								sender.sendMessage("플러그인 파일을 리셋했습니다.");
 								
