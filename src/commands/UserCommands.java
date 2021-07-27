@@ -15,30 +15,40 @@ import org.bukkit.inventory.Inventory;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import com.wasteofplastic.askyblock.events.IslandPreLevelEvent;
 
-import util.FileReader;
+import util.FileManager;
 
 public class UserCommands implements CommandExecutor, Listener
 {
-	private static final HashMap<String, Player> openChestTask = new HashMap<>();	//fromPlayerUUID, toPlayer
+	private static final HashMap<String, Player> openChestTask = new HashMap<>();	//명령어 실행 Task  <fromPlayerUUID, toPlayer>
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String arg, String[] add)
-	{
-		Player fromPlayer = null;
-		UUID fromPlayerUUID = null;
-		if(sender instanceof Player) {
-			fromPlayer = (Player)sender;
-			fromPlayerUUID = fromPlayer.getUniqueId();
-		}else {
-			return false;
-		}
-		
+	{		
 		if(arg.equalsIgnoreCase("섬창고")) {
 			if(add.length > 0 && add[0].equalsIgnoreCase("열기")) {
-				if(add.length == 1) {
-					openChestTask.put(fromPlayerUUID.toString(), fromPlayer);
+				Player runPlayer = null;
+				UUID fromPlayerUUID = null;
+				if(sender instanceof Player) {	//플레이어가 실행하지 않았다면 취소
+					runPlayer = (Player)sender;
+				}else {
+					return false;
+				}
+				
+				if(add.length == 1) {	//섬창고 열기 -------------------------------------------------------
+					fromPlayerUUID = runPlayer.getUniqueId();
+					
+					openChestTask.put(fromPlayerUUID.toString(), runPlayer);
 					ASkyBlockAPI.getInstance().calculateIslandLevel(fromPlayerUUID);
-				}else if(fromPlayer.isOp() && add.length == 2) {
+					return true;
+				}else if(runPlayer.isOp() && add.length == 2) {	//섬창고 열기 <플레이어 이름>    (OP만 가능)-------
+					Player fromPlayer = Bukkit.getPlayer(add[1]);	 //플레이어 찾기
+					if(fromPlayer == null) {
+						return false;
+					}
+					fromPlayerUUID = fromPlayer.getUniqueId();
+					
+					openChestTask.put(fromPlayerUUID.toString(), runPlayer);
+					ASkyBlockAPI.getInstance().calculateIslandLevel(fromPlayerUUID);
 					return true;
 				}
 			}
@@ -46,58 +56,58 @@ public class UserCommands implements CommandExecutor, Listener
 		return false;
 	}
 	
-	private int calculateChestSize(UUID uuid, long islandLevel) {	//상자크기 계산
-		int size = 0;
-		
-		for(int i = 0; i < 6; i++) {
-			if(FileReader.chestSize[i] <= islandLevel) {
-				size += 9;
-			}
-		}
-		return size;
-	}
-	
-	private Inventory checkChestSize(Inventory inputInven, UUID uuid, long islandLevel) {	//상자크기 갱신 처리
-		Inventory outputInven = inputInven;
-		int targetSize = calculateChestSize(uuid, islandLevel);
-		
-		if(targetSize > inputInven.getSize()) {
-			outputInven = Bukkit.createInventory(null, targetSize, "섬 창고");
-			outputInven.setContents(inputInven.getContents());
-			FileReader.islandChest.put(ASkyBlockAPI.getInstance().getIslandName(uuid), outputInven);	//저장
-		}
-		
-		return outputInven;
-	}
-	
 	@EventHandler
-	public void onCalculateIslandLevel(IslandPreLevelEvent event) {
+	public void onCalculateIslandLevel(IslandPreLevelEvent event) {	//섬레벨 계산이 끝나면
 		UUID fromPlayerUUID = event.getPlayer();
-		if(openChestTask.containsKey(fromPlayerUUID.toString())) {
+		if(openChestTask.containsKey(fromPlayerUUID.toString())) {	//명령어 실행 Task에 플레이어가 있다면
 			openOwnIslandChest(fromPlayerUUID, openChestTask.get(fromPlayerUUID.toString()), event.getLongLevel());
 			openChestTask.remove(fromPlayerUUID.toString());
 		}
 	}
 	
-	private boolean openOwnIslandChest(UUID fromPlayerUUID, Player toPlayer, long islandLevel) {		
+	private boolean openOwnIslandChest(UUID fromPlayerUUID, Player toPlayer, long islandLevel) {		//상자 열기
 		if(ASkyBlockAPI.getInstance().isCoop(Bukkit.getPlayer(fromPlayerUUID))) {	//Coop이면 중지
 			return false;
 		}
 		
-		UUID islandOwner = ASkyBlockAPI.getInstance().inTeam(fromPlayerUUID) ? ASkyBlockAPI.getInstance().getTeamLeader(fromPlayerUUID) : fromPlayerUUID;	//섬이름, 주인 가져오기
-		String islandName = ASkyBlockAPI.getInstance().getIslandName(islandOwner);
+		UUID islandOwnerUUID = ASkyBlockAPI.getInstance().inTeam(fromPlayerUUID) ? ASkyBlockAPI.getInstance().getTeamLeader(fromPlayerUUID) : fromPlayerUUID;	//섬이름, 주인 가져오기
+		String islandName = ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID);
 		
 		Inventory islandChest = null;	//인벤토리 가져오기
-		if(FileReader.islandChest.containsKey(islandName)) {
-			islandChest = checkChestSize(FileReader.islandChest.get(islandName), fromPlayerUUID, islandLevel);
+		if(FileManager.islandChest.containsKey(islandName)) {
+			islandChest = checkChestSize(FileManager.islandChest.get(islandName), fromPlayerUUID, islandLevel);
 		}else {
-			islandChest = Bukkit.createInventory(null, calculateChestSize(islandOwner, islandLevel), "섬 창고");	//없으면 생성
-			FileReader.islandChest.put(islandName, islandChest);	//저장
+			islandChest = Bukkit.createInventory(null, calculateChestSize(islandLevel), islandName + "섬 창고");	//없으면 생성
+			FileManager.islandChest.put(islandName, islandChest);	//저장
 		}
 		
 		toPlayer.openInventory(islandChest);
 		
 		return true;
 	}
-
+	
+	private Inventory checkChestSize(Inventory targetInven, UUID islandOwnerUUID, long islandLevel) {	//상자크기 갱신 처리
+		Inventory outputInven = targetInven;
+		int targetSize = calculateChestSize(islandLevel);
+		
+		if(targetSize > targetInven.getSize()) {	//목표 크기보다 작으면 늘림
+			outputInven = Bukkit.createInventory(null, targetSize, ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + "섬 창고");
+			outputInven.setContents(targetInven.getContents());
+			FileManager.islandChest.put(ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID), outputInven);	//저장
+		}
+		
+		return outputInven;
+	}
+	
+	private int calculateChestSize(long islandLevel) {	//목표 상자 크기 계산
+		int size = 0;
+		
+		for(int i = 0; i < 6; i++) {
+			if(FileManager.chestSize[i] <= islandLevel) {
+				size += 9;
+			}
+		}
+		
+		return size;
+	}
 }

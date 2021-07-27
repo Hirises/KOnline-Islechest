@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import commands.CommandTabCompleter;
 import commands.UserCommands;
-import util.FileReader;
+import util.FileManager;
 
 public class Main extends JavaPlugin
 {
@@ -21,7 +21,7 @@ public class Main extends JavaPlugin
 		registerEvents();
 		
 		SetDefault();
-		FileReader.readChestInfor();
+		FileManager.readChestSize();
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "플러그인이 활성화되었습니다");
 	}
@@ -29,7 +29,7 @@ public class Main extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "플러그인이 비홝성화되었습니다");
+		Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "플러그인이 비활성화되었습니다");
 	}
 	
 	private void registerCommands() {
@@ -43,11 +43,11 @@ public class Main extends JavaPlugin
 	}
 	
 	private void SetDefault() {
-		FileReader.chestSize[0] = 1;
-		FileReader.chestSize[1] = 11;
-		FileReader.chestSize[2] = 21;
-		FileReader.chestSize[3] = 31;
-		FileReader.chestSize[4] = 41;
-		FileReader.chestSize[5] = 51;
+		FileManager.chestSize[0] = 1;
+		FileManager.chestSize[1] = 11;
+		FileManager.chestSize[2] = 21;
+		FileManager.chestSize[3] = 31;
+		FileManager.chestSize[4] = 41;
+		FileManager.chestSize[5] = 51;
 	}
 }
