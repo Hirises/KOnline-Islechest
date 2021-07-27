@@ -1,5 +1,6 @@
 package commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,11 +13,28 @@ public class CommandTabCompleter implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String arg, String[] add)	//Tab 자동완성
 	{
-		if(arg.equalsIgnoreCase("섬창고")) {
-			String arguments = "열기";
-			if(add.length == 1 && arguments.startsWith(add[0])) {
-				return Arrays.asList(arguments);
-			}
+		switch(arg) {
+			case "섬창고":
+				String argument = "열기";
+				
+				if(add.length == 1 && argument.startsWith(add[0])) {
+					return Arrays.asList(argument);
+				}
+				
+				return null;
+			case "islechest":
+				List<String> arguments = Arrays.asList("reload", "save");
+				ArrayList<String> output = new ArrayList<>();
+				
+				if(add.length == 1) {
+					for(String targetStr : arguments) {
+						if(targetStr.startsWith(add[0])) {
+							output.add(targetStr);
+						}
+					}
+				}
+				
+				return output;
 		}
 		return null;
 	}

@@ -10,3 +10,7 @@ commands:
     열기:
       description: open sender's island chest
       usage: /섬창고 열기 [플레이어 이름]
+  Islechest:
+    reload:
+      description: reload KOnline-Islechest plugin's all config file
+      usage: /Islechest reload

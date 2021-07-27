@@ -17,8 +17,7 @@ public class FileManager
 	public static final int[] chestSize = new int[6];	//상자 레벨별 크기 (index:0 부터 오름차순)
 	
 	public static void readChestSize() {	//레벨별 상자 크기 읽기
-		Bukkit.getConsoleSender().sendMessage(Main.plugin.getDataFolder().getAbsolutePath() + "\\chestsize.yml");
-		File f = new File(Main.plugin.getDataFolder().getAbsolutePath() + "/chestsize.yml");
+		File f = new File(Main.plugin.getDataFolder().getAbsolutePath() + "\\chestsize.yml");
 		
 		if(!f.exists()) {	//존재하지 않으면 생성
 			try
