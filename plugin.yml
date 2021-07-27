@@ -14,3 +14,6 @@ commands:
     reload:
       description: reload KOnline-Islechest plugin's all config file
       usage: /Islechest reload
+    reset:
+      description: reset KOnline-Islechest plugin's all config file
+      usage: /Islechest reset

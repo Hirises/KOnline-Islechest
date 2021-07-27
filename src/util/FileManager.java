@@ -25,7 +25,8 @@ public class FileManager
 				createNewChestSizeFile(f);
 			} catch (IOException e)
 			{
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "chestsize.yml 파일을 새로 생성하는 중 오류가 발생했습니다. " + e.getMessage());
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "chestsize.yml 파일을 새로 생성하는 중 오류가 발생했습니다.");
+				e.printStackTrace();
 				return;
 			}
 		}

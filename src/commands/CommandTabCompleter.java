@@ -23,7 +23,7 @@ public class CommandTabCompleter implements TabCompleter {
 				
 				return null;
 			case "islechest":
-				List<String> arguments = Arrays.asList("reload", "save");
+				List<String> arguments = Arrays.asList("reload", "save", "reset");
 				ArrayList<String> output = new ArrayList<>();
 				
 				if(add.length == 1) {
