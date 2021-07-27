@@ -75,9 +75,9 @@ public class UserCommands implements CommandExecutor, Listener
 		
 		Inventory islandChest = null;	//인벤토리 가져오기
 		if(FileManager.islandChest.containsKey(islandName + '/' + islandOwnerUUID)) {
-			islandChest = checkChestSize(FileManager.islandChest.get(islandName + '/' +  islandOwnerUUID), fromPlayerUUID, islandLevel);
+			islandChest = updateChest(FileManager.islandChest.get(islandName + '/' +  islandOwnerUUID), fromPlayerUUID, islandLevel);
 		}else {
-			islandChest = Bukkit.createInventory(null, calculateChestSize(islandLevel), islandName + "섬 창고");	//없으면 생성
+			islandChest = Bukkit.createInventory(null, calculateChestSize(islandLevel), islandName + "의 섬 창고");	//없으면 생성
 			FileManager.islandChest.put(islandName + '/' +  islandOwnerUUID, islandChest);	//저장
 		}
 		
@@ -86,12 +86,16 @@ public class UserCommands implements CommandExecutor, Listener
 		return true;
 	}
 	
-	private Inventory checkChestSize(Inventory targetInven, UUID islandOwnerUUID, long islandLevel) {	//상자크기 갱신 처리
+	private Inventory updateChest(Inventory targetInven, UUID islandOwnerUUID, long islandLevel) {	//상자 갱신 처리
 		Inventory outputInven = targetInven;
 		int targetSize = calculateChestSize(islandLevel);
 		
 		if(targetSize > targetInven.getSize()) {	//목표 크기보다 작으면 늘림
-			outputInven = Bukkit.createInventory(null, targetSize, ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + "섬 창고");
+			outputInven = Bukkit.createInventory(null, targetSize, ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + "의 섬 창고");
+			outputInven.setContents(targetInven.getContents());
+			FileManager.islandChest.put(ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + '/' +  islandOwnerUUID, outputInven);	//저장
+		}else if(!targetInven.getTitle().equalsIgnoreCase(ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + "의 섬 창고")) {	//이름 갱신
+			outputInven = Bukkit.createInventory(null, targetSize, ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + "의 섬 창고");
 			outputInven.setContents(targetInven.getContents());
 			FileManager.islandChest.put(ASkyBlockAPI.getInstance().getIslandName(islandOwnerUUID) + '/' +  islandOwnerUUID, outputInven);	//저장
 		}
