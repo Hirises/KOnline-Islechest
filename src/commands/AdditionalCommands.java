@@ -35,7 +35,8 @@ public class AdditionalCommands implements CommandExecutor
 					}
 					
 					if(!isOP) {
-						return false;
+						sender.sendMessage("해당 명령어를 실행할 수 있는 권한이 없습니다.");
+						return true;
 					}
 					
 					switch(add[0]) {
@@ -70,7 +71,7 @@ public class AdditionalCommands implements CommandExecutor
 								{
 									Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "chestsize.yml 파일을 초기화하는 중 오류가 발생했습니다.");
 									e.printStackTrace();
-									return false;
+									return true;
 								}
 								
 								f = new File(Main.plugin.getDataFolder().getAbsolutePath() + "\\chestcontents.yml");
@@ -100,7 +101,10 @@ public class AdditionalCommands implements CommandExecutor
 									@Override
 									public void run()
 									{
-										isRunReset = false;
+										if(isRunReset == true) {
+											sender.sendMessage("...end");
+											isRunReset = false;
+										}
 									}
 								}, 60);
 							}
