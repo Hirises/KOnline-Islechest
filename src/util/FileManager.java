@@ -23,6 +23,12 @@ public class FileManager
 	public static final HashMap<String, Inventory> islandChest = new HashMap<>();	//상자 저장
 	public static final int[] chestSize = new int[6];	//상자 레벨별 크기 (index:0 부터 오름차순)
 	
+	public static void ReloadFiles() {
+		Main.SetDefault();
+		FileManager.readChestSize();	//파일 읽어오기
+		FileManager.readChestContents();
+	}
+	
 	public static void readChestContents() {	//상자 내용물 읽기
 		File f = new File(Main.plugin.getDataFolder().getAbsolutePath() + "\\chestcontents.yml");
 		

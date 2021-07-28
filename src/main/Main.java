@@ -21,9 +21,7 @@ public class Main extends JavaPlugin
 		registerCommands();
 		registerEvents();
 		
-		SetDefault();
-		FileManager.readChestSize();	//파일 읽어오기
-		FileManager.readChestContents();
+		FileManager.ReloadFiles();
 		
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "플러그인이 활성화되었습니다");
 	}
